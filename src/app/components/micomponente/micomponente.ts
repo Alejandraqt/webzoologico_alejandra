@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { AnimalService } from '../../services/animal-service';
 
 @Component({
   selector: 'app-micomponente',
@@ -9,6 +10,18 @@ import { FormsModule } from '@angular/forms';
 })
 
 export class Micomponente {
-  titulo = "mi titulo"
+  
+  animalList: any = [];
+
+  constructor(private animalService: AnimalService) { }
+
+  getAllAnimals() {
+    this.animalService.getAllAnimalsData().subscribe((data: {}) => {
+      this.animalList = data;
+    });
+  }
+  ngOnInit() {
+    this.getAllAnimals();
+  }
 
 }
