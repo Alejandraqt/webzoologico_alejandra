@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AnimalService } from '../../services/animal-service';
+import { ToastrService } from 'ngx-toastr';
+import { take } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-micomponente',
-  imports: [FormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './micomponente.html',
   styleUrl: './micomponente.css',
 })
@@ -12,16 +15,47 @@ import { AnimalService } from '../../services/animal-service';
 export class Micomponente {
   
   animalList: any = [];
+  animalForm: FormGroup | any;
 
-  constructor(private animalService: AnimalService) { }
+  constructor(
+    private animalService: AnimalService,
+    private toastr: ToastrService,
+    private router: Router,
+    private formBuilder: FormBuilder
+  ) { }
 
   getAllAnimals() {
     this.animalService.getAllAnimalsData().subscribe((data: {}) => {
       this.animalList = data;
     });
   }
+
   ngOnInit() {
+    this.animalForm = this.formBuilder.group({
+      nombre: '',
+      edad: 0,
+      tipo: ''
+    })
     this.getAllAnimals();
+  }
+  
+  newMessage(messageText: string) {
+    this.toastr.success('Clic aquí para actualizar la lista', messageText)
+      .onTap
+      .pipe(take(1))
+      .subscribe(() => window.location.reload());
+  }
+
+  newAnimalEntry() {
+    this.animalService.newAnimal(this.animalForm.value).subscribe(
+      () => {
+        //Redirigiendo a la ruta actual /inicio y recargando la ventana
+        this.router.navigate(['/inicio'])
+        .then(()=> {
+          this.newMessage('Registro exitoso');
+        })
+      }
+    );
   }
 
 }
