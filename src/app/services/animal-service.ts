@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class AnimalService {
 
-  apiUri = '/api/animalitos';
+  apiUri = '/api/animals';
   //apiUri2 = '/api/all';  
   httpOptions = new HttpHeaders().set('Content-Type', 'application/json');
 
@@ -28,4 +28,27 @@ export class AnimalService {
       { headers: this.httpOptions });
   }
 
+  //Metodo actualizar animal
+  updateAnimal(id: any, data: any): Observable<any> {
+    console.log(data)
+    return this.http.put<any>(
+      this.apiUri + '/' + id,
+      data,
+      { headers: this.httpOptions });
+  }
+
+  getOneAnimal(id: any): Observable<any> {
+    console.log(this.apiUri + '/' + id)
+    return this.http.get<any>(
+      this.apiUri + '/' + id,
+      { headers: this.httpOptions });
+  }
+
+  deleteAnimal(id: any) {
+    return this.http.delete<any>(
+      this.apiUri + "/" + id,
+      { headers: this.httpOptions });
+  }
+
+  
 }
